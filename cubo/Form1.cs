@@ -16,7 +16,11 @@ namespace cubo
     {
 
         string[,,] arbol = new string[2, 2, 100];
-        int ultimo_cubo = 0;
+        string[,,] combinaciones = new string[2, 2, 100];
+        int ultimo_cubo_arbol = 0;
+        int ultimo_cubo_combinaciones = 0;
+        string[,] cubo = new string[2, 2];
+        string elemento_lista = "";
 
 
         public Form1()
@@ -28,14 +32,16 @@ namespace cubo
             textBox8.Text = "2";
             label4.Text = "";
             listBox1.Items.Clear();
+            listBox2.Items.Clear();
 
-            for(int i=0;i<2;i++)
+            for (int i=0;i<2;i++)
             {
                 for(int j=0;j<2;j++)
                 {
                     for(int k=0;k<100; k++)
                     {
                         arbol[i,j,k] = "0";
+                        combinaciones[i, j, k] = "0";
                     }
                 }
 
@@ -51,7 +57,7 @@ namespace cubo
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string[,] cubo =new string [2,2];
+            
 
 
             cubo[0,0] = textBox1.Text;
@@ -59,11 +65,26 @@ namespace cubo
             cubo[1,0] = textBox3.Text;
             cubo[1,1] = textBox4.Text;
 
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    arbol[i, j,0] = cubo[i, j];
+                    combinaciones[i, j, 0] = cubo[i, j];
+                }
+            }
+
+            string elemento_lista = cubo[0, 0] + cubo[0, 1] + cubo[1, 0] + cubo[1, 1];
+            listBox1.Items.Add(elemento_lista);
+            listBox2.Items.Add(elemento_lista);
+
             int bien= fichas_correctas(cubo);
             if (bien==1)
             {
                 label4.Text = "";
-                movimientos(cubo);
+                elemento_lista= movimientos(cubo);
+                listBox1.Items.Add(elemento_lista);
+                listBox2.Items.Add(elemento_lista);
             }
             else
             {
@@ -76,7 +97,7 @@ namespace cubo
 
         }
 
-        public int ultimo_cub()
+        public int ultimo_cub(string[,,] arbol)
         {
             
             for (int k = 0; k < 100; k++)
@@ -100,12 +121,13 @@ namespace cubo
 
         }
 
-        public void movimientos(string[,] cubo)
+        public string movimientos(string[,] cubo)
         {
-            ultimo_cubo = ultimo_cub();
+            ultimo_cubo_arbol = ultimo_cub(arbol);
+            ultimo_cubo_combinaciones=ultimo_cub(combinaciones);
             string[,] cubo_auxiliar = new string[2, 2];
             string auxiliar;
-            string elemento_lista="";
+            elemento_lista = "";
             for(int i = 0; i < 2; i++)
             {
                 for(int j=0;j<2;j++)
@@ -132,11 +154,11 @@ namespace cubo
                             {
                                 for (int columna = 0; columna < 2; columna++)
                                 {
-                                    arbol[fila, columna,ultimo_cubo] = cubo[fila, columna];
+                                    arbol[fila, columna,ultimo_cubo_arbol] = cubo[fila, columna];
                                 }
                             }
 
-                            ultimo_cubo += 1;
+                            ultimo_cubo_arbol += 1;
 
                             elemento_lista = elemento_lista + cubo_auxiliar[0, 0] + cubo_auxiliar[0, 1] + cubo_auxiliar[1, 0] + cubo_auxiliar[1, 1] + ",";
                             
@@ -166,11 +188,11 @@ namespace cubo
                             {
                                 for (int columna = 0; columna < 2; columna++)
                                 {
-                                    arbol[fila, columna, ultimo_cubo] = cubo[fila, columna];
+                                    arbol[fila, columna, ultimo_cubo_arbol] = cubo[fila, columna];
                                 }
                             }
 
-                            ultimo_cubo += 1;
+                            ultimo_cubo_arbol += 1;
 
                             elemento_lista = elemento_lista + cubo_auxiliar[0, 0] + cubo_auxiliar[0, 1] + cubo_auxiliar[1, 0] + cubo_auxiliar[1, 1] + ",";
 
@@ -200,11 +222,11 @@ namespace cubo
                             {
                                 for (int columna = 0; columna < 2; columna++)
                                 {
-                                    arbol[fila, columna, ultimo_cubo] = cubo[fila, columna];
+                                    arbol[fila, columna, ultimo_cubo_arbol] = cubo[fila, columna];
                                 }
                             }
 
-                            ultimo_cubo += 1;
+                            ultimo_cubo_arbol += 1;
 
                             elemento_lista = elemento_lista + cubo_auxiliar[0, 0] + cubo_auxiliar[0, 1] + cubo_auxiliar[1, 0] + cubo_auxiliar[1, 1] + ",";
 
@@ -234,11 +256,11 @@ namespace cubo
                             {
                                 for (int columna = 0; columna < 2; columna++)
                                 {
-                                    arbol[fila, columna, ultimo_cubo] = cubo[fila, columna];
+                                    arbol[fila, columna, ultimo_cubo_arbol] = cubo[fila, columna];
                                 }
                             }
 
-                            ultimo_cubo += 1;
+                            ultimo_cubo_arbol += 1;
 
                             elemento_lista = elemento_lista + cubo_auxiliar[0, 0] + cubo_auxiliar[0, 1] + cubo_auxiliar[1, 0] + cubo_auxiliar[1, 1] + ",";
 
@@ -258,10 +280,12 @@ namespace cubo
 
                         }
 
-                        listBox1.Items.Add(elemento_lista);
+                        
                     }
                 }
             }
+
+            return elemento_lista;
             
         }
 
@@ -321,6 +345,32 @@ namespace cubo
 
 
 
+        }
+
+        public void cola()
+        {
+            for(int i = 0; i < 2; i++)
+            {
+                for(int j=0;j<2;j++)
+                {
+                    cubo[i, j]=arbol[i,j,0];
+                }
+            }
+
+            while (true)
+            {
+                elemento_lista = "";
+                elemento_lista = movimientos(cubo);
+
+                
+            }
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            listBox1.Items.Clear();
+            listBox2.Items.Clear();
         }
     }
 }
